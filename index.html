@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Weather</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$("#btn").click(function(e){
+				e.preventDefault();
+				$("#weatherbox").html("Loading...");
+				var query = $("#search").val();
+				console.log(query);
+				$.get("http://api.openweathermap.org/data/2.5/weather?q="+query+"&appid=994468c83540706f67c7c105f3abd862",function(res){
+					var temperature = precisionRound((res.main.temp - 273.25)*9/5 + 32,1);
+					var low = precisionRound((res.main.temp_min - 273.25)*9/5 + 32,1);
+					var high = precisionRound((res.main.temp_min - 273.25)*9/5 + 32,1);
+					var img = res.weather[0].icon;
+					var humidity = res.main.humidity;
+					$("#weatherbox").html(`<h1>`+res.name+`</h1><img src="http://openweathermap.org/img/w/`+img+`.png" id="weatherIcon" alt="`+img+`"><h3>`+res.weather[0].main+` (`+res.weather[0].description+`)</h3><h3>Temperature: `+temperature+`°F</h3><h3>Low: `+low+`°F</h3><h3>High: `+high+`°F</h3><h3>Humidity: `+humidity+`</h3>`);
+					console.log(res);
+				}, "json")
+			})
+		})
+		function precisionRound(number,precision)
+		{
+			var factor = Math.pow(10,precision);
+			return Math.round(number * factor) / factor;
+		}
+	</script>
+</head>
+<body>
+	<form>
+		<input type="text" id="search" placeholder="City, Country"><button id="btn">Search Weather</button>
+	</form>
+	<div id="theweather">
+		<div id="weatherbox">
+
+		</div>
+	</div>
+</body>
+</html>
